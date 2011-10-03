@@ -2,6 +2,7 @@
 require "hivequeen_client/hivequeen"
 
 Capistrano::Configuration.instance(:must_exist).load do
+  logger.trace "Hivequeen endpoint is #{hivequeen_endpoint.inspect}"
   HiveQueen.endpoint = hivequeen_endpoint
   HiveQueen.logger = logger
 
