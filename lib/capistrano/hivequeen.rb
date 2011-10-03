@@ -2,7 +2,6 @@
 require "capistrano/hivequeen/server"
 
 Capistrano::Configuration.instance(:must_exist).load do
-  debugger
   HiveQueen.endpoint = hivequeen_endpoint
   HiveQueen.logger = logger
 
