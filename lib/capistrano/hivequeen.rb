@@ -3,6 +3,7 @@ require "capistrano/hivequeen/server"
 
 Capistrano::Configuration.instance(:must_exist).load do
   HiveQueen.endpoint = hivequeen_endpoint
+  HiveQueen.project = application
   HiveQueen.logger = logger
 
   # Redefine stage tasks from multistage extension

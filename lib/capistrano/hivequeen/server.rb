@@ -8,10 +8,10 @@ require 'fileutils'
 # - environment not ready: fail
 class HiveQueen
   class << self
-    attr_accessor :endpoint, :logger
+    attr_accessor :endpoint, :logger, :project
 
     def project_data
-      @project_data ||= fetch('/projects/kickstarter')
+      @project_data ||= fetch("/projects/#{project}")
     end
 
     def environments
