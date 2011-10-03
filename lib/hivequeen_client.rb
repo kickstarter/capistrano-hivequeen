@@ -1,5 +1,5 @@
 # Load environment configuration from Hive Queen
-require "hive_queen_client/hive_queen"
+require "hivequeen_client/hivequeen"
 
 HiveQueen.endpoint = hivequeen_endpoint
 HiveQueen.logger = logger
