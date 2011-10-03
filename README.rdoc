@@ -1,0 +1,16 @@
+== HiveQueen client
+
+Makes your capistrano scripts aware of HiveQueen environments.
+
+=== Installation
+
+In your Gemfile:
+
+    group :development do
+      gem 'hivequeen_client', :require => nil
+    end
+
+And in your config/deploy.rb:
+
+    set :hivequeen_endpoint, "http://your.hivequeen.com"
+    require 'hivequeen_client'
