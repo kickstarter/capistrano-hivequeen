@@ -1,8 +1,8 @@
-# Load environment configuration from Hive Queen
-require "hivequeen_client/hivequeen"
+# Load environment configuration from HiveQueen
+require "capistrano/hivequeen/server"
 
 Capistrano::Configuration.instance(:must_exist).load do
-  logger.trace "Hivequeen endpoint is #{hivequeen_endpoint.inspect}"
+  debugger
   HiveQueen.endpoint = hivequeen_endpoint
   HiveQueen.logger = logger
 

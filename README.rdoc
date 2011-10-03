@@ -7,7 +7,7 @@ Makes your capistrano scripts aware of HiveQueen environments.
 In your Gemfile:
 
     group :development do
-      gem 'hivequeen_client', :require => nil
+      gem 'capistrano/hivequeen', :require => nil
     end
 
 And in your config/deploy.rb:

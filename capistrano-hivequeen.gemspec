@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   ## Leave these as is they will be modified for you by the rake gemspec task.
   ## If your rubyforge_project name is different, then edit it and comment out
   ## the sub! line in the Rakefile
-  s.name              = 'hivequeen_client'
+  s.name              = 'capistrano-hivequeen'
   s.version           = '0.3.0'
   s.date              = '2011-10-03'
 
@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   ## a custom homepage, consider using your GitHub URL or the like.
   s.authors  = ["Aaron Suggs"]
   s.email    = 'aaron@kickstarter.com'
-  s.homepage = 'http://github.com/kickstarter/hivequeen_client'
+  s.homepage = 'http://github.com/kickstarter/capistrano-hivequeen'
 
   ## This sections is only necessary if you have C extensions.
   # s.require_paths << 'ext'
