@@ -36,15 +36,13 @@ class HiveQueen
     # Try to load credentials, or read them from ~/.hivequeen
     def set_credentials!
       @username, @password = File.read(credential_path).chomp.split(':')
-      raise "Could not read credentials from #{credential_path}. Try removing the file."
-    rescue Errno::ENOENT
-      puts "Enter your username:"
-      @username = gets.chomp
-      puts "Enter your password:"
-      @password = gets.chomp
-      puts "Saving credentials to #{credential_path}"
-      File.open(credential_path, 'w', 0600){|f| f << [username, password] * ':'}
-      retry
+      raise unless username && password
+    rescue Errno::ENOENT, RuntimeError
+      puts "Could not read HiveQueen credentials from #{credential_path}."
+      puts "#{credential_path} should contain your username and password seperated by a colon"
+      puts "Run this command with your credentials:"
+      puts " $ echo username:password > #{credential_path}"
+      exit 1
     end
 
     protected
