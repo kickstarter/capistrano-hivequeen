@@ -60,10 +60,11 @@ class HiveQueen
     end
 
     def fetch(path)
-      logger.trace "Fetching #{endpoint}/#{path}"
+      url = "#{endpoint}#{path}"
+      logger.trace "Fetching #{url}"
       response = connection.get(:path => path, :headers => auth_header)
       unless (200..299).include?(response.status)
-        raise "Request to #{endpoint}/#{path} returned #{response.status} status"
+        raise "Request to #{url} returned #{response.status} status"
       end
       JSON.parse(response.body)
     end
