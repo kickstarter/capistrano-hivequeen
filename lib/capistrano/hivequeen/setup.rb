@@ -1,6 +1,24 @@
 # Capistrano tasks for Chef
 
 Capistrano::Configuration.instance.load do
+
+  # Resets the user for a block
+  # Based on http://www.pgrs.net/2008/08/06/switching-users-during-a-capistrano-deploy/
+  def as_user(new_user=nil)
+    logger.trace "Using the current user account"
+    old_user = user
+    set :user, new_user
+    close_sessions
+    yield
+    set :user, old_user
+    close_sessions
+  end
+
+  def close_sessions
+    sessions.values.each { |session| session.close }
+    sessions.clear
+  end
+
   namespace :deploy do
     desc "[internal] Original Capistrano task. Don't run this."
     task(:setup) do
@@ -10,13 +28,8 @@ Capistrano::Configuration.instance.load do
 
   desc "Run chef-client on all servers"
   task :setup do
-    logger.trace "Using the current user account"
-    orig_user = user
-    set :user, nil # Use current user account
-    sudo "chef-client"
-
-    # Reset user
-    logger.trace "Resetting user to #{orig_user}"
-    set :user, orig_user
+    as_user do
+      sudo "chef-client"
+    end
   end
 end
