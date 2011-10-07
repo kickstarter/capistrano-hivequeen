@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   ## If your rubyforge_project name is different, then edit it and comment out
   ## the sub! line in the Rakefile
   s.name              = 'capistrano-hivequeen'
-  s.version           = '0.4.2'
+  s.version           = '0.4.3'
   s.date              = '2011-10-07'
 
   ## Make sure your summary is short. The description may be as long
@@ -38,6 +38,7 @@ Gem::Specification.new do |s|
   s.add_dependency('capistrano-ext')
   s.add_dependency('capistrano')
   s.add_dependency('json')
+  s.add_dependency('excon', '>= 0.6.0') # Perhaps we can support older. Haven't checked.
 
   ## List your development dependencies here. Development dependencies are
   ## those that are only needed during development
