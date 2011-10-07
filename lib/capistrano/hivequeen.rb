@@ -30,6 +30,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     desc "Use environment #{name}"
     task name do
       set :stage, name.to_sym
+      set :rails_env, name
       set :environment_id, env['id']
       environment = HiveQueen.roles(hive_queen_id)
       # Check if environment is ready
