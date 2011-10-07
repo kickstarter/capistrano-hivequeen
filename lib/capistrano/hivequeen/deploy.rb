@@ -23,4 +23,13 @@ Capistrano::Configuration.instance.load do
     setup
     deploy.migrations
   end
+
+  desc "Show servers & roles"
+  task :show do
+    roles.each do |name, value|
+      servers = value.servers
+      logger.debug "== #{name} role (#{servers.size} servers):"
+      logger.debug servers.join("\n") if servers.any?
+    end
+  end
 end
