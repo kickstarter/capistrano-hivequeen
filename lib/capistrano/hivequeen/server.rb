@@ -33,8 +33,8 @@ class HiveQueen
       @roles[env_id] ||= fetch("/environments/#{env_id}.json")
     end
 
-    # Try to load credentials, or read them from ~/.hivequeen
-    def set_credentials!
+    # Load credentials from ~/.hivequeen
+    def get_credentials!
       @username, @password = File.read(credential_path).chomp.split(':')
       raise unless username && password
     rescue Errno::ENOENT, RuntimeError

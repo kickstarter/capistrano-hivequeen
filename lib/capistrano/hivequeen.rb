@@ -5,7 +5,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   HiveQueen.endpoint = hivequeen_endpoint
   HiveQueen.project = application
   HiveQueen.logger = logger
-  HiveQueen.set_credentials!
+  HiveQueen.get_credentials!
 
   # Redefine stage tasks from multistage extension
   # Set the list of available stages
