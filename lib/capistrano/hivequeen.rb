@@ -16,10 +16,6 @@ Capistrano::Configuration.instance(:must_exist).load do
   set :repository, HiveQueen.repository
   set :scm, :git
 
-  # Setup roles
-  set :app_roles, [:app]
-  set :bg_roles, [:bg]
-
   # Load capistrano multi-stage extension
   require 'fileutils' # required until https://github.com/capistrano/capistrano-ext/commit/930ca840a0b4adad0ec53546790b3f5ffe726538 is released
   require 'capistrano/ext/multistage'

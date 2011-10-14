@@ -40,7 +40,7 @@ Capistrano::Configuration.instance.load do
     # See http://unicorn.bogomips.org/SIGNALS.html
     %w(start stop restart upgrade).each do |action|
       desc "#{action} the unicorn processes"
-      task action, :roles => app_roles do
+      task action, :roles => fetch(:app_roles, [:app]) do
         run "/etc/init.d/unicorn_#{application} #{action}"
       end
     end
@@ -56,7 +56,7 @@ Capistrano::Configuration.instance.load do
   namespace :bg do
     %w(start stop restart).each do |action|
       desc "#{action} the delayed_job processes"
-      task action, :roles => bg_roles do
+      task action, :roles => fetch(:bg_roles, [:bg]) do
         run "sv #{action} `cd /etc/service; ls -d dj_*`"
       end
     end
