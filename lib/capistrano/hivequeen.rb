@@ -38,7 +38,9 @@ Capistrano::Configuration.instance(:must_exist).load do
       set :stage, name.to_sym
       set :rails_env, name
       set :environment_id, hive_queen_id
-      set :branch, environment['branch']
+      unless exists?(:branch)
+        set :branch, environment['branch']
+      end
 
       # Set servers for each role
       environment['roles'].each do |role_name, role_config|
