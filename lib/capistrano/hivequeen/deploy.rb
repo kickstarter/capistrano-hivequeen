@@ -8,6 +8,28 @@ Capistrano::Configuration.instance.load do
     end
   end
 
+  before "deploy:update", "hivequeen:start"
+  before "setup",         "hivequeen:start"
+  namespace :hivequeen do
+    desc "[internal] Start a deployment in hivequeen"
+    task :start do
+      # TODO: is there a better way to determine what cap tasks are running?
+      tasks = ARGV.reject{|task_name| stage.to_s == task_name}
+      params = {
+        :task => tasks.join(' '),
+        :commit => real_revision,
+        :override => override
+      }
+      begin
+        deployment = HiveQueen.start_deployment(environment_id, params)
+        set :deployment_id, deployment['id']
+        at_exit { HiveQueen.finish_deployment(environment_id, deployment['id']) }
+      rescue HiveQueen::DeploymentError
+        abort "Cannot start deployment. Errors: #{$!.message}"
+      end
+    end
+  end
+
   desc "Deploy without migrations"
   task(:hotfix) { deploy.default }
 
