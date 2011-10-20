@@ -10,8 +10,13 @@ Capistrano::Configuration.instance(:must_exist).load do
   # Redefine stage tasks from multistage extension
   # Set the list of available stages
   set :stages, HiveQueen.environment_names
-  # When no stage is specified, use staging
-  set :default_stage, :staging
+
+  # Default to using the current branch as the stage name
+  # NB: current branch may not be set
+  current_branch = `git symbolic-ref HEAD`.chomp.sub('refs/head/', '')
+  unless current_branch.empty?
+    set :default_stage, current_branch.to_sym
+  end
 
   set :repository, HiveQueen.repository
   set :scm, :git
