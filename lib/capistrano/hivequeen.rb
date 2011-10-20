@@ -13,9 +13,10 @@ Capistrano::Configuration.instance(:must_exist).load do
 
   # Default to using the current branch as the stage name
   # NB: current branch may not be set
-  current_branch = `git symbolic-ref HEAD`.chomp.sub('refs/head/', '')
+  current_branch = `git symbolic-ref HEAD`.chomp.sub('refs/heads/', '')
   unless current_branch.empty?
-    set :default_stage, current_branch.to_sym
+    env_name = HiveQueen.environment_for_branch(current_branch)
+    set(:default_stage, env_name) if env_name
   end
 
   set :repository, HiveQueen.repository

@@ -26,6 +26,11 @@ class HiveQueen
       environments.map{|e| e['name'].to_sym }
     end
 
+    def environment_for_branch(branch)
+      env = environments.detect{|e| e['branch'] == branch }
+      env['name'] if env
+    end
+
     def repository
       project_data['repo']
     end
