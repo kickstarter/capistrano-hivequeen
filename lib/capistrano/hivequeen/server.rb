@@ -81,7 +81,7 @@ class HiveQueen
     end
 
     def connection
-      @connection ||= Excon.new(endpoint)
+      Excon.new(endpoint)
     end
 
     def auth_header
