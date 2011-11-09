@@ -21,6 +21,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
   set :repository, HiveQueen.repository
   set :scm, :git
+  ssh_options[:forward_agent] = true
 
   # By default, don't override deployments if there's another deployment in progress.
   # From the command line, use -s override=true to force a deployment
