@@ -8,7 +8,7 @@ Capistrano::Configuration.instance.load do
     end
   end
 
-  before "deploy:update", "hivequeen:start"
+  before "deploy:update_code", "hivequeen:start"
   before "setup",         "hivequeen:start"
   namespace :hivequeen do
     desc "[internal] Start a deployment in hivequeen"
