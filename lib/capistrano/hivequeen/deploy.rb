@@ -79,7 +79,7 @@ Capistrano::Configuration.instance.load do
     %w(start stop restart).each do |action|
       desc "#{action} the delayed_job processes"
       task action, :roles => fetch(:bg_roles, [:bg]) do
-        run "sv #{action} `cd /etc/service; ls -d dj_*`"
+        run "sv -w #{bg_wait_time } #{action} `cd /etc/service; ls -d dj_*`"
       end
     end
   end

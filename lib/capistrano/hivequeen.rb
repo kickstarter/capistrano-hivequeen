@@ -27,6 +27,9 @@ Capistrano::Configuration.instance(:must_exist).load do
   # From the command line, use -s override=true to force a deployment
   set :override, false
 
+  # Time to wait for Background jobs processes to start/stop
+  set :bg_wait_time, 30
+
   # Load capistrano multi-stage extension
   require 'fileutils' # required until https://github.com/capistrano/capistrano-ext/commit/930ca840a0b4adad0ec53546790b3f5ffe726538 is released
   require 'capistrano/ext/multistage'
