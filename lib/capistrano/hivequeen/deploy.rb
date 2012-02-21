@@ -70,7 +70,7 @@ Capistrano::Configuration.instance.load do
   # Ensure background jobs are stopped before running a migrations
   before "deploy:migrate", "bg:stop"
   # Ensure background jobs are stopped before symlinking (as part of a normal deploy)
-  before "deploy:symlink", "bg:stop"
+  before "deploy:create_symlink", "bg:stop"
   # Restart background jobs after the app is restarted
   after "deploy:restart", "bg:restart"
 
