@@ -103,6 +103,8 @@ class HiveQueen
       headers = auth_header.merge("Content-type"=>"application/json", "Accept"=>"application/json")
       response = connection.request(:path => path, :method => method, :headers => headers, :body => data.to_json)
       case response.status
+      when 204
+        # Do nothing
       when (200..299)
         JSON.parse(response.body)
       when (400..499)
