@@ -119,11 +119,5 @@ class HiveQueen
   end
 end
 
-
-
-
-
-
-
 require "capistrano/hivequeen/capistrano_configuration"
 
