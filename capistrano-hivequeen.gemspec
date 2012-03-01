@@ -1,3 +1,5 @@
+require File.expand_path('./capistrano/hivequeen/version.rb')
+
 Gem::Specification.new do |s|
   s.specification_version = 2 if s.respond_to? :specification_version=
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
@@ -6,7 +8,7 @@ Gem::Specification.new do |s|
   ## If your rubyforge_project name is different, then edit it and comment out
   ## the sub! line in the Rakefile
   s.name              = 'capistrano-hivequeen'
-  s.version           = '0.9.1'
+  s.version           = HiveQueen::VERSION
   s.date              = Time.now.strftime("%Y-%m-%d")
 
   ## Make sure your summary is short. The description may be as long
@@ -35,8 +37,8 @@ Gem::Specification.new do |s|
 
   ## List your runtime dependencies here. Runtime dependencies are those
   ## that are needed for an end user to actually USE your code.
-  s.add_dependency('capistrano-ext')
-  s.add_dependency('capistrano')
+  s.add_dependency('capistrano-ext', '= 1.2.1')
+  s.add_dependency('capistrano', '~> 2.11.2')
   s.add_dependency('json')
   s.add_dependency('excon', '>= 0.6.0') # Perhaps we can support older. Haven't checked.
 
