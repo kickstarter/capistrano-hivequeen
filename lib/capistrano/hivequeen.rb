@@ -3,6 +3,7 @@ require 'json'
 require 'fileutils'
 require 'excon'
 require 'base64'
+require 'capistrano/hivequeen/version'
 
 # Special cases:
 # - environment not found
