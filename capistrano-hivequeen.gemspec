@@ -1,4 +1,4 @@
-require File.expand_path('./capistrano/hivequeen/version.rb')
+require File.expand_path('./lib/capistrano/hivequeen/version.rb')
 
 Gem::Specification.new do |s|
   s.specification_version = 2 if s.respond_to? :specification_version=
