@@ -55,6 +55,8 @@ class HiveQueen
       state = $! ? 'failed' : 'succeeded'
       puts "Finishing deployment in Hivequeen. State: #{state}"
       params = {:deployment => {:state => state}}
+      deploy_log = logger.device.history
+      params[:deploy_log] = deploy_log if deploy_log
       put_or_post('PUT', "/environments/#{environment_id}/deployments/#{deployment_id}.json", params)
     end
 
