@@ -20,7 +20,7 @@ Capistrano::Configuration.instance.load do
         :commit => real_revision,
         :override => override
       }
-      params[:change_log] = changelog_command.call(current_commit, real_revision) if current_commit
+      params[:change_log] = changelog_command if current_commit
 
       begin
         deployment = HiveQueen.start_deployment(environment_id, params)

@@ -31,7 +31,9 @@ Capistrano::Configuration.instance(:must_exist).load do
   set :skip_bg, false
 
   # Command to get the changes being deployed
-  set :changelog_command, proc{|from, to| `/bin/bash -xc 'git log #{from}...#{to} --pretty="%n%h %an: %s (%ar)" --stat --no-color'` }
+  set :changelog_command do
+    `/bin/bash -xc 'git log #{current_commit}...#{real_revision} --pretty="%n%h %an: %s (%ar)" --stat --no-color'`
+  end
 
   # Load capistrano multi-stage extension
   require 'fileutils' # required until https://github.com/capistrano/capistrano-ext/commit/930ca840a0b4adad0ec53546790b3f5ffe726538 is released
