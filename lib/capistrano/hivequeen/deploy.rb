@@ -14,11 +14,14 @@ Capistrano::Configuration.instance.load do
     task :start do
       # TODO: is there a better way to determine what cap tasks are running?
       tasks = ARGV.reject{|task_name| stage.to_s == task_name}
+
       params = {
         :task => tasks.join(' '),
         :commit => real_revision,
         :override => override
       }
+      params[:change_log] = changelog_command.call(current_commit, real_revision) if current_commit
+
       begin
         deployment = HiveQueen.start_deployment(environment_id, params)
         set :deployment_id, deployment['id']

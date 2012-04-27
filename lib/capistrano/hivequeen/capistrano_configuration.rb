@@ -30,6 +30,9 @@ Capistrano::Configuration.instance(:must_exist).load do
   # Option to skip background tasks
   set :skip_bg, false
 
+  # Command to get the changes being deployed
+  set :changelog_command, proc{|from, to| `/bin/bash -xc 'git log #{from}...#{to} --pretty="%n%h %an: %s (%ar)" --stat --no-color'` }
+
   # Load capistrano multi-stage extension
   require 'fileutils' # required until https://github.com/capistrano/capistrano-ext/commit/930ca840a0b4adad0ec53546790b3f5ffe726538 is released
   require 'capistrano/ext/multistage'
@@ -40,6 +43,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   HiveQueen.environments.each do |env|
     name = env['name']
     hive_queen_id = env['id']
+    current_commit = env['current_commit']
 
     desc "Use environment #{name}"
     task name do
@@ -52,6 +56,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       set :stage, name.to_sym
       set :rails_env, name
       set :environment_id, hive_queen_id
+      set :current_commit, current_commit
       unless exists?(:branch)
         set :branch, environment['branch']
       end
