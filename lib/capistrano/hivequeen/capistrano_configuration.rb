@@ -1,4 +1,6 @@
 Capistrano::Configuration.instance(:must_exist).load do
+  # Capture capistrano log output
+  @logger = Capistrano::Logger.new(HiveQueen::MultiIO.new)
   HiveQueen.endpoint = hivequeen_endpoint
   HiveQueen.project = application
   HiveQueen.logger = logger
@@ -32,7 +34,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
   # Command to get the changes being deployed
   set :changelog_command do
-    `/bin/bash -xc 'git log #{current_commit}...#{real_revision} --pretty="%n%h %an: %s (%ar)" --stat --no-color'`
+    `git log #{current_commit}...#{real_revision} --pretty="%n%h %an: %s (%ar)" --stat --no-color`
   end
 
   # Load capistrano multi-stage extension

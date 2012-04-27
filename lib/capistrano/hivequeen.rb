@@ -4,6 +4,7 @@ require 'fileutils'
 require 'excon'
 require 'base64'
 require 'capistrano/hivequeen/version'
+require 'capistrano/hivequeen/multiio'
 
 # Special cases:
 # - environment not found
