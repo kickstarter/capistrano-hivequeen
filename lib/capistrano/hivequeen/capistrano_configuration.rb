@@ -1,6 +1,6 @@
 Capistrano::Configuration.instance(:must_exist).load do
   # Capture capistrano log output
-  @logger = Capistrano::Logger.new(HiveQueen::MultiIO.new)
+  @logger = Capistrano::Logger.new(:output => HiveQueen::MultiIO.new)
   HiveQueen.endpoint = hivequeen_endpoint
   HiveQueen.project = application
   HiveQueen.logger = logger
