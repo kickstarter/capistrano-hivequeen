@@ -9,11 +9,18 @@ Capistrano::Configuration.instance.load do
   end
 
   before "deploy:update_code", "hivequeen:start"
+  on :start, "hivequeen:require_environment", :except => HiveQueen.environment_names
   namespace :hivequeen do
+
+    desc "[internal] abort if no environment specified"
+    task :require_environment do
+      abort "No environment specified." if !exists?(:environment)
+    end
+
     desc "[internal] Start a deployment in hivequeen"
     task :start do
       # TODO: is there a better way to determine what cap tasks are running?
-      tasks = ARGV.reject{|task_name| stage.to_s == task_name}
+      tasks = ARGV.reject{|task_name| environment.to_s == task_name}
 
       params = {
         :task => tasks.join(' '),

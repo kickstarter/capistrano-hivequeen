@@ -8,17 +8,9 @@ Capistrano::Configuration.instance(:must_exist).load do
   HiveQueen.logger = logger
   HiveQueen.get_credentials!
 
-  # Redefine stage tasks from multistage extension
-  # Set the list of available stages
-  set :stages, HiveQueen.environment_names
-
   # Default to using the current branch as the stage name
   # NB: current branch may not be set
-  current_branch = `git symbolic-ref HEAD`.chomp.sub('refs/heads/', '')
-  unless current_branch.empty?
-    env_name = HiveQueen.environment_for_branch(current_branch)
-    set(:default_stage, env_name) if env_name
-  end
+  #current_branch = `git symbolic-ref HEAD`.chomp.sub('refs/heads/', '')
 
   set :repository, HiveQueen.repository
   set :scm, :git
@@ -39,13 +31,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     `git log #{current_commit}...#{real_revision} --pretty="%n%h %an: %s (%ar)" --stat --no-color`
   end
 
-  # Load capistrano multi-stage extension
-  require 'fileutils' # required until https://github.com/capistrano/capistrano-ext/commit/930ca840a0b4adad0ec53546790b3f5ffe726538 is released
-  require 'capistrano/ext/multistage'
-  require 'capistrano/hivequeen/setup'
-  require 'capistrano/hivequeen/deploy'
-
-  # Redefine stage tasks from multistage extension
+  # Define environment tasks
   HiveQueen.environments.each do |env|
     name = env['name']
     hive_queen_id = env['id']
@@ -53,22 +39,22 @@ Capistrano::Configuration.instance(:must_exist).load do
 
     desc "Use environment #{name}"
     task name do
-      environment = HiveQueen.roles(hive_queen_id)
+      env = HiveQueen.roles(hive_queen_id)
       # Check if environment is ready
-      unless environment['state'] == 'running'
-        abort "Environment #{name} is not ready. State: #{environment['state']}"
+      unless env['state'] == 'running'
+        abort "Environment #{name} is not ready. State: #{env['state']}"
       end
 
-      set :stage, name.to_sym
+      set :environment, name.to_sym
       set :rails_env, name
       set :environment_id, hive_queen_id
       set :current_commit, current_commit
       unless exists?(:branch)
-        set :branch, environment['branch']
+        set :branch, env['branch']
       end
 
       # Set servers for each role
-      environment['roles'].each do |role_name, role_config|
+      env['roles'].each do |role_name, role_config|
         role(role_name.to_sym) { role_config['servers'] }
       end
 
@@ -85,4 +71,8 @@ Capistrano::Configuration.instance(:must_exist).load do
 
     end
   end
+  require 'capistrano/hivequeen/setup'
+  require 'capistrano/hivequeen/deploy'
+
+
 end
