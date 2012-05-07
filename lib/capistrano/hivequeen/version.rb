@@ -1,6 +1,6 @@
 class HiveQueen
   class Version
-    @@version = '1.1.0'
+    @@version = '2.0.0'
 
     def self.to_s
       @@version
