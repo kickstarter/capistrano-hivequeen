@@ -15,6 +15,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   set :repository, HiveQueen.repository
   set :scm, :git
   ssh_options[:forward_agent] = true
+  set :deploy_via, :remote_cache
 
   # By default, don't override deployments if there's another deployment in progress.
   # From the command line, use -s override=true to force a deployment
@@ -30,6 +31,12 @@ Capistrano::Configuration.instance(:must_exist).load do
   set :changelog_command do
     `git log #{current_commit}...#{real_revision} --pretty="%n%h %an: %s (%ar)" --stat --no-color`
   end
+
+  # Don't mess with timestamps
+  set :normalize_asset_timestamps, false
+  # Don't mess with permissions
+  set :group_writable, false
+  set :use_sudo, false
 
   # Define environment tasks
   HiveQueen.environments.each do |env|
