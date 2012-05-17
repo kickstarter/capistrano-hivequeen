@@ -92,12 +92,15 @@ Capistrano::Configuration.instance.load do
     %w(start stop restart).each do |action|
       desc "#{action} the delayed_job processes"
       task action, :roles => fetch(:bg_roles, [:bg]) do
-        next if skip_bg
         begin
-          run "sv -w #{bg_wait_time } #{action} `cd /etc/service; ls -d dj_*`"
+          run "sv #{action} `cd /etc/service; ls -d dj_*`"
         rescue Capistrano::CommandError
-          logger.debug "Error running bg:#{action}. Consider running with '-s skip_bg=true'"
-          raise $!
+          if tolerate_slow_bg
+            logger.info "Some bg workers did not #{action} quickly, but will #{action} when the current job finishes."
+            logger.info "Consider running with '-s tolerate_slow_bg=false'"
+          else
+            raise $!
+          end
         end
       end
 

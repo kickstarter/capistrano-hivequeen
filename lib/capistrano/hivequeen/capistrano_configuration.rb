@@ -24,8 +24,9 @@ Capistrano::Configuration.instance(:must_exist).load do
   # From the command line, use -s override=true to force a deployment
   set :override, false
 
-  # Time to wait for Background jobs processes to start/stop
-  set :bg_wait_time, 30
+  # If a delayed_job worker doesn't stop/restart in time (probably b/c a slow job is running)
+  # trust that runit will eventually stop/restart the worker
+  set :tolerate_slow_bg, true
 
   # Option to skip background tasks
   set :skip_bg, false
