@@ -1,11 +1,18 @@
 Capistrano::Configuration.instance.load do
   # Symlink shared config files
-  after "deploy:update_code", "deploy:symlink_shared_config"
+  after "deploy:update_code", "deploy:provision_config"
   namespace :deploy do
+    desc "[internal] Provision config files from HiveQueen"
+    task :provision_config => [:symlink_shared_config] do
+      ###
+
+    end
+
     desc "[internal] Symlink shared config files to current release"
     task :symlink_shared_config do
       run "ln -nfs #{shared_path}/config/* #{latest_release}/config"
     end
+
   end
 
   before "deploy:update_code", "hivequeen:start"
