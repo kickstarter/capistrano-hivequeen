@@ -82,6 +82,18 @@ Capistrano::Configuration.instance(:must_exist).load do
 
     end
   end
+
+  namespace :ssh do
+    HiveQueen.default_roles.each do |role_name|
+      task role_name do
+        cmd =  "ssh -t -A -l #{user} #{roles[role_name.to_sym].servers.first}"
+        puts "Executing #{cmd}"
+        exec cmd
+      end
+    end
+
+  end
+
   require 'capistrano/hivequeen/setup'
   require 'capistrano/hivequeen/deploy'
 

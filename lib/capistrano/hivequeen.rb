@@ -20,6 +20,10 @@ class HiveQueen
       @project_data ||= get("/projects/#{project}.json")
     end
 
+    def default_roles
+      @project_data['default_roles']
+    end
+
     def environments
       project_data['environments']
     end
