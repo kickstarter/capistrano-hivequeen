@@ -19,5 +19,9 @@ class HiveQueen
       @memory.read
     end
 
+    def tty?
+      [@memory, @output].all?(&:tty?)
+    end
+
   end
 end
