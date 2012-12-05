@@ -17,7 +17,7 @@ class HiveQueen
     attr_accessor :endpoint, :logger, :project, :username, :password
 
     def project_data
-      @project_data ||= get("/projects/#{project}.json")
+      @project_data ||= get("/#{project}.json")
     end
 
     def default_roles
@@ -39,7 +39,7 @@ class HiveQueen
     def roles(env_id)
       env_id = env_id.to_sym
       @roles ||= {}
-      @roles[env_id] ||= get("/environments/#{env_id}.json")
+      @roles[env_id] ||= get("/#{env_id}.json")
     end
 
     def start_deployment(environment_id, params)
