@@ -14,3 +14,15 @@ And in your config/deploy.rb:
 
     set :hivequeen_endpoint, "http://your.hivequeen.com"
     require 'hivequeen_client'
+
+=== Options
+
+[availability_zone]
+  Restrict commands to servers in an availability zone:
+
+    cap staging app:start -s availability_zone=us-east-1a
+
+[branch]
+  Use a specific branch, rather than the default for the Hivequeen environment:
+
+    cap staging deploy -s branch=some_feature
