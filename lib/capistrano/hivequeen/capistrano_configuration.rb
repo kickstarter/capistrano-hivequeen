@@ -36,6 +36,9 @@ Capistrano::Configuration.instance(:must_exist).load do
     `git log #{current_commit}...#{real_revision} --pretty="%n%h %an: %s (%ar)" --stat --no-color`
   end
 
+  # Limit of change log size
+  set :changelog_maxbytes, 700 * 1024
+
   # Don't mess with timestamps
   set :normalize_asset_timestamps, false
   # Don't mess with permissions
