@@ -31,7 +31,7 @@ Capistrano::Configuration.instance.load do
 
       if current_commit
         params[:change_log] = changelog_command
-        if change_log.size > changelog_maxbytes
+        if params[:change_log].size > changelog_maxbytes
           params[:change_log] = params[:change_log][0..changelog_maxbytes - 1]
           logger.debug "Change log too large, truncating"
         end
