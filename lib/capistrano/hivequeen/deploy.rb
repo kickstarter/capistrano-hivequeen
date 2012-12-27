@@ -28,7 +28,14 @@ Capistrano::Configuration.instance.load do
         :commit => real_revision,
         :override => override
       }
-      params[:change_log] = changelog_command if current_commit
+
+      if current_commit
+        params[:change_log] = changelog_command
+        if params[:change_log].size > changelog_maxbytes
+          params[:change_log] = params[:change_log][0..changelog_maxbytes - 1]
+          logger.debug "Change log too large, truncating"
+        end
+      end
 
       begin
         deployment = HiveQueen.start_deployment(environment_id, params)
