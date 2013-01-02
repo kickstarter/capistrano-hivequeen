@@ -66,7 +66,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       # Set servers for each role
       env['roles'].each do |role_name, role_config|
-        servers = role_config['servers']
+        servers = role_config['instances']
         if exists?(:az)
           servers = servers.select {|s| s['availability_zone'] == az}
         end
