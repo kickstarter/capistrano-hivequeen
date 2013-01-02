@@ -17,10 +17,10 @@ And in your config/deploy.rb:
 
 === Options
 
-[availability_zone]
+[az]
   Restrict commands to servers in an availability zone:
 
-    cap staging app:start -s availability_zone=us-east-1a
+    cap staging app:start -s az=us-east-1a
 
 [branch]
   Use a specific branch, rather than the default for the Hivequeen environment:
