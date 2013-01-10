@@ -43,7 +43,7 @@ class HiveQueen
     end
 
     def commit_status(commit_sha)
-      get("/#{project}/commit_statuses/#{commit_sha}.json")
+      get("/projects/#{project}/commit_statuses/#{commit_sha}.json")
     end
 
     def start_deployment(environment_id, params)
