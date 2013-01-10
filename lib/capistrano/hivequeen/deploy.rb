@@ -10,6 +10,7 @@ Capistrano::Configuration.instance.load do
   end
 
   before "deploy:update_code", "hivequeen:start"
+    before 'hivequeen:start', 'hivequeen:check_commit'
   on :start, "hivequeen:require_environment", :except => HiveQueen.environment_names
   namespace :hivequeen do
 
@@ -43,6 +44,50 @@ Capistrano::Configuration.instance.load do
         at_exit { HiveQueen.finish_deployment(environment_id, deployment['id']) }
       rescue HiveQueen::DeploymentError
         abort "Cannot start deployment. Errors: #{$!.message}"
+      end
+    end
+
+    desc "[internal] Prompt if deploying the currently running commit, or if tests haven't passed"
+    task :check_commit do
+      if environment.to_s == 'production'
+        if current_commit == real_revision
+          banner = %q{
+ ______                   _     _                          _    ___
+|  ____|                 | |   | |                        | |  |__ \
+| |__ ___  _ __ __ _  ___| |_  | |_ ___    _ __  _   _ ___| |__   ) |
+|  __/ _ \| '__/ _` |/ _ \ __| | __/ _ \  | '_ \| | | / __| '_ \ / /
+| | | (_) | | | (_| |  __/ |_  | || (_) | | |_) | |_| \__ \ | | |_|
+|_|  \___/|_|  \__, |\___|\__|  \__\___/  | .__/ \__,_|___/_| |_(_)
+                __/ |                     | |
+               |___/                      |_|
+}
+          puts banner
+          puts "\n\nCommit #{current_commit} is currently deployed\n"
+          Capistrano::CLI.ui.ask("Did you forget to push a new commit? Press enter to continue deploying, or ctrl+c to abort")
+        end
+
+        banner = %{
+ _______        _             _ _     _       _ _                         _
+|__   __|      | |           | (_)   | |     ( ) |                       | |
+   | | ___  ___| |_ ___    __| |_  __| |_ __ |/| |_   _ __   __ _ ___ ___| |
+   | |/ _ \/ __| __/ __|  / _` | |/ _` | '_ \  | __| | '_ \ / _` / __/ __| |
+   | |  __/\__ \ |_\__ \ | (_| | | (_| | | | | | |_  | |_) | (_| \__ \__ \_|
+   |_|\___||___/\__|___/  \__,_|_|\__,_|_| |_|  \__| | .__/ \__,_|___/___(_)
+                                                     | |
+                                                     |_|
+}
+        puts "Checking commit status for #{real_revision}"
+        status = HiveQueen.commit_status(real_revision)
+        unless status && status['state'] == "success"
+          puts banner
+          if status
+            puts "Current commit status is #{status['state']}; see #{status['target_url']} for more info"
+          else
+            puts "Unknown commit status"
+          end
+
+          Capistrano::CLI.ui.ask("Are you sure you want to deploy when tests haven't passed? Press enter to continue deploying, or ctrl+c to abort")
+        end
       end
     end
   end

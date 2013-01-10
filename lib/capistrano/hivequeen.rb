@@ -42,6 +42,10 @@ class HiveQueen
       @roles[env_id] ||= get("/#{env_id}.json")
     end
 
+    def commit_status(commit_sha)
+      get("/#{project}/commit_statuses/#{commit_sha}.json")
+    end
+
     def start_deployment(environment_id, params)
       required_params = [:task, :commit]
       required_params.each do |key|
