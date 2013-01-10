@@ -66,7 +66,7 @@ Capistrano::Configuration.instance.load do
           Capistrano::CLI.ui.ask("Did you forget to push a new commit? Press enter to continue deploying, or ctrl+c to abort")
         end
 
-        banner = %{
+        banner = %q{
  _______        _             _ _     _       _ _                         _
 |__   __|      | |           | (_)   | |     ( ) |                       | |
    | | ___  ___| |_ ___    __| |_  __| |_ __ |/| |_   _ __   __ _ ___ ___| |
