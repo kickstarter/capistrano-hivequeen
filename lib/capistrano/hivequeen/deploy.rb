@@ -80,11 +80,12 @@ Capistrano::Configuration.instance.load do
         status = HiveQueen.commit_status(real_revision)
         unless status && status['state'] == "success"
           puts banner
-          if status
-            puts "Current commit status is #{status['state']}; see #{status['target_url']} for more info"
-          else
-            puts "Unknown commit status"
+
+          message = "Commit status is %s." % (status['state'] || 'unknown')
+          if status['target_url']
+            message << " See #{status['target_url']}"
           end
+          puts "\n\n#{message}\n"
 
           Capistrano::CLI.ui.ask("Are you sure you want to deploy when tests haven't passed? Press enter to continue deploying, or ctrl+c to abort")
         end
