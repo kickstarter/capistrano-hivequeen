@@ -122,42 +122,11 @@ Capistrano::Configuration.instance.load do
     end
   end
 
-  before "deploy:restart", "app:upgrade"
-  namespace :app do
-    # NB: if preload_app is true, reload will not pick up application changes.
-    # Use upgrade instead.
-    # See http://unicorn.bogomips.org/SIGNALS.html
-    %w(start stop restart upgrade).each do |action|
-      desc "#{action} the unicorn processes"
-      task action, :roles => fetch(:app_roles, [:app]) do
-        run "/etc/init.d/unicorn_#{application} #{action}"
-      end
-    end
-  end
-
-  # Ensure background jobs are stopped before running a migrations
-  before "deploy:migrate", "bg:stop"
-  # Ensure background jobs are stopped before symlinking (as part of a normal deploy)
-  before "deploy:create_symlink", "bg:stop"
-  # Restart background jobs after the app is restarted
-  after "deploy:restart", "bg:restart"
-
-  namespace :bg do
-    %w(start stop restart).each do |action|
-      desc "#{action} the delayed_job processes"
-      task action, :roles => fetch(:bg_roles, [:bg]) do
-        begin
-          run "sv #{action} `cd /etc/service; ls -d dj_*`"
-        rescue Capistrano::CommandError
-          if tolerate_slow_bg
-            logger.info "Some bg workers did not #{action} quickly, but will #{action} when the current job finishes."
-            logger.info "Consider running with '-s tolerate_slow_bg=false'"
-          else
-            raise $!
-          end
-        end
-      end
-
+  after "deploy:restart", "deploy:restart_rails_services"
+  namespace :deploy do
+    desc "restarts all rails services concurrently"
+    task :restart_rails_services, :roles => [:app, :search, :bg] do
+      run "/etc/init.d/rails_services restart"
     end
   end
 end
