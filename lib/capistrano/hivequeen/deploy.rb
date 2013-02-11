@@ -66,7 +66,7 @@ Capistrano::Configuration.instance.load do
           Capistrano::CLI.ui.ask("Did you forget to push a new commit? Press enter to continue deploying, or ctrl+c to abort")
         end
 
-        banner = %q{
+        tests_didnt_pass = %q{
  _______        _             _ _     _       _ _                         _
 |__   __|      | |           | (_)   | |     ( ) |                       | |
    | | ___  ___| |_ ___    __| |_  __| |_ __ |/| |_   _ __   __ _ ___ ___| |
@@ -76,9 +76,22 @@ Capistrano::Configuration.instance.load do
                                                      | |
                                                      |_|
 }
+        tests_running = %q{
+
+ _______        _                                _
+|__   __|      | |                              (_)
+   | | ___  ___| |_ ___   _ __ _   _ _ __  _ __  _ _ __   __ _
+   | |/ _ \/ __| __/ __| | '__| | | | '_ \| '_ \| | '_ \ / _` |
+   | |  __/\__ \ |_\__ \ | |  | |_| | | | | | | | | | | | (_| |_ _ _
+   |_|\___||___/\__|___/ |_|   \__,_|_| |_|_| |_|_|_| |_|\__, (_|_|_)
+                                                          __/ |
+                                                         |___/
+
+}
         puts "Checking commit status for #{real_revision}"
         status = HiveQueen.commit_status(real_revision)
         unless status && status['state'] == "success"
+          banner = status['state'] == 'pending' ? tests_running : tests_didnt_pass
           puts banner
 
           message = "Commit status is %s." % (status['state'] || 'unknown')
