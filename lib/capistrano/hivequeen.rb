@@ -92,7 +92,7 @@ class HiveQueen
     end
 
     def auth_header
-      value = Base64.encode64([username, password] * ':').chomp
+      value = Base64.encode64([username, password] * ':').gsub(/\n/, '')
       { 'Authorization' => "Basic #{value}" }
     end
 
