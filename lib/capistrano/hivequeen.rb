@@ -65,26 +65,26 @@ class HiveQueen
 
     # Load credentials from ~/.hivequeen
     def get_credentials!
-      @username, @password = File.read(credential_path).chomp.split(':')
+      @username, @password = File.read(credentials_path).chomp.split(':')
       raise unless username && password
       # Check that credentials are not accessible to world or group
-      mode = File.stat(credential_path).mode
+      mode = File.stat(credentials_path).mode
       raise InsecureCredentials unless (mode % 64 == 0)
     rescue InsecureCredentials
-      puts "#{credential_path} is insecure. Please change you password and run"
-      puts "chmod 600 #{credential_path}"
+      puts "#{credentials_path} is insecure. Please change you password and run"
+      puts "chmod 600 #{credentials_path}"
       exit 1
     rescue Errno::ENOENT, RuntimeError
-      puts "Could not read HiveQueen credentials from #{credential_path}."
-      puts "#{credential_path} should contain your username and password seperated by a colon"
+      puts "Could not read HiveQueen credentials from #{credentials_path}."
+      puts "#{credentials_path} should contain your username and password seperated by a colon"
       puts "Run this command with your credentials:"
-      puts " $ echo username:password > #{credential_path}; chmod 600 #{credential_path}"
+      puts " $ echo username:password > #{credentials_path}; chmod 600 #{credentials_path}"
       exit 1
     end
 
     protected
-    def credential_path
-      File.join(ENV['HOME'], '.hivequeen')
+    def credentials_path
+      ENV['HIVEQUEEN_CREDENTIALS_PATH'] || File.join(ENV['HOME'], '.hivequeen')
     end
 
     def connection
