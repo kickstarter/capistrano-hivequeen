@@ -1,16 +1,57 @@
 Capistrano::Configuration.instance.load do
-  # Symlink shared config files
-  after "deploy:update_code", "deploy:symlink_shared_config"
+  # Redefine the basic deploy tasks were need for
+  # S3 tarballs
   namespace :deploy do
-    desc "[internal] Symlink shared config files to current release"
-    task :symlink_shared_config do
-      run "ln -nfs #{shared_path}/config/* #{latest_release}/config"
+    desc "Deploy"
+    task :default do
+      deploy.stage
+      deploy.release
     end
 
+    desc "Prepares for release by bundling gems, symlinking shared files, etc"
+    task :stage do
+      deploy.extract
+      deploy.config
+      run "cd #{release_path} && deploy/remote/stage"
+    end
+
+    desc "Runs the release script to symlink a staged deploy and restarts services"
+    task :release do
+      run "cd #{release_path} && deploy/remote/release"
+    end
+
+    desc "Downloads and extracts a tarball on S3 to the remote servers"
+    task :extract do
+      deploy.upload
+      # Needs url, real_revision, deploy_to, current_path
+      # NB: pipe stderr to /dev/null to avoid a bunch of messages about
+      # "Ignoring unknown extended header keyword" due to
+      # incompatibilities with bsdtar (os x) and gnutar (linux). Yay!
+      run "mkdir -p #{release_path} && curl -s '#{s3_tarball.download_url}' | tar -zxC #{release_path} 2> /dev/null"
+    end
+
+    desc "Uploads deploy config file"
+    task :config do
+      deploy_config_data = %{
+RELEASE_PATH=#{release_path}
+RELEASES_PATH=#{File.dirname(release_path)}
+CURRENT_PATH=#{current_path}
+KEEP_RELEASES=#{keep_releases}
+SHARED_PATH=#{shared_path}
+RAILS_ENV=#{rails_env}
+}
+      put(deploy_config_data, deploy_config)
+    end
+
+    desc "Checks that a deployable tarball is on S3; creates it if missing"
+    task :upload do
+      `deploy/upload`
+      abort "Failed to upload build" if $?.exitstatus != 0
+    end
   end
 
-  before "deploy:update_code", "hivequeen:start"
-    before 'hivequeen:start', 'hivequeen:check_commit'
+  before "deploy:extract", "hivequeen:start"
+  before 'hivequeen:start', 'hivequeen:check_commit'
   on :start, "hivequeen:require_environment", :except => HiveQueen.environment_names
   namespace :hivequeen do
 
@@ -105,10 +146,6 @@ Capistrano::Configuration.instance.load do
       end
     end
   end
-
-  # Keep all but the 5 most recent releases
-  set :keep_releases, 5
-  after "deploy", "deploy:cleanup"
 
   desc "Deploy without migrations"
   task(:hotfix) { deploy.default }
