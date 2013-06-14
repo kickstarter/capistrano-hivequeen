@@ -22,6 +22,21 @@ Capistrano::Configuration.instance(:must_exist).load do
     `git log #{current_commit}...#{real_revision} --pretty="%n%h %an: %s (%ar)" --stat --no-color`
   end
 
+  # Parse sha from branch; depends on remote git repo.
+  set :sha do
+    raise "Must specify a branch" unless branch.present?
+    line = `git ls-remote #{repository} #{branch}`.split("\n").first
+    raise "Unable to find sha for branch #{branch}" unless line.presence.try {|l| l.split.last == "refs/heads/#{branch}"}
+    line.split.first
+  end
+
+  # Expand sha into a complete git sha
+  set :full_sha do
+    full_sha = `git rev-parse --verify #{sha}`.strip
+    raise "#{sha} is not a valid git ref. Run `git fetch` and try again?" if sha.empty?
+    full_sha
+  end
+
   # Limit of change log size
   set :changelog_maxbytes, 700 * 1024
 
