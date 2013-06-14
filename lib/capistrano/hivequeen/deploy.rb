@@ -106,10 +106,6 @@ Capistrano::Configuration.instance.load do
     end
   end
 
-  # Keep all but the 5 most recent releases
-  set :keep_releases, 5
-  after "deploy", "deploy:cleanup"
-
   desc "Deploy without migrations"
   task(:hotfix) { deploy.default }
 
