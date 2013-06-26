@@ -1,5 +1,7 @@
 Capistrano::Configuration.instance.load do
 
+  set :deploy_roles, [:app, :search, :bg, :resque]
+
   before "deploy:extract", "hivequeen:start"
   before 'hivequeen:start', 'hivequeen:check_commit'
   on :start, "hivequeen:require_environment", :except => HiveQueen.environment_names
@@ -124,7 +126,7 @@ Capistrano::Configuration.instance.load do
 
   namespace :deploy do
     desc "restarts all rails services concurrently"
-    task :restart, :roles => [:app, :search, :bg, :resque] do
+    task :restart, :roles => deploy_roles do
       run "/etc/init.d/rails_services upgrade"
     end
   end
