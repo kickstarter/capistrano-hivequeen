@@ -124,10 +124,4 @@ Capistrano::Configuration.instance.load do
     end
   end
 
-  namespace :deploy do
-    desc "restarts all rails services concurrently"
-    task :restart, :roles => deploy_roles do
-      run "/etc/init.d/rails_services upgrade"
-    end
-  end
 end
