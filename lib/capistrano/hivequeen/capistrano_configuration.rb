@@ -8,8 +8,6 @@ Capistrano::Configuration.instance(:must_exist).load do
   HiveQueen.logger = logger
   HiveQueen.get_credentials!
 
-  # Default to using the current branch as the stage name
-  # NB: current branch may not be set
   set :repository, HiveQueen.repository
   ssh_options[:forward_agent] = true
 
