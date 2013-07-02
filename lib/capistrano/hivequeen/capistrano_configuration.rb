@@ -20,13 +20,22 @@ Capistrano::Configuration.instance(:must_exist).load do
     `git log #{current_commit}...#{real_revision} --pretty="%n%h %an: %s (%ar)" --stat --no-color`
   end
 
+  # Default to using `git ls-remote` to resolve SHA from github.
+  # Run with `-s github=false` to remove dependency on remote.
+  set :github, true
+
   # Parse sha from branch; depends on remote git repo.
   set :sha do
     raise "Must specify a branch" unless branch.present?
-    line = `git ls-remote #{repository} #{branch}`.split("\n").first
-    raise "Unable to find sha for branch #{branch}" unless line.presence.try {|l| l.split.last == "refs/heads/#{branch}"}
-    line.split.first
-  end
+    if github
+      line = `git ls-remote #{repository} #{branch}`.split("\n").first
+      raise "Unable to find sha for branch #{branch}" unless line.presence.try {|l| l.split.last == "refs/heads/#{branch}"}
+      line.split.first
+    else
+      warn "Skipping github, using local git checkout"
+      branch
+    end
+    end
 
   # Expand sha into a complete git sha
   set :full_sha do
