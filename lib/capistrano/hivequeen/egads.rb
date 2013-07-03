@@ -2,6 +2,10 @@
 # Can be moved into capistrano/hivequeen/deploy.rb
 # after legacy stuff is removed
 Capistrano::Configuration.instance.load do
+
+  # Redefine real_revision
+  set(:real_revision) { full_sha }
+
   namespace :deploy do
     desc "restarts all rails services concurrently"
     task :restart do
