@@ -1,16 +1,7 @@
 Capistrano::Configuration.instance.load do
-  # Symlink shared config files
-  after "deploy:update_code", "deploy:symlink_shared_config"
-  namespace :deploy do
-    desc "[internal] Symlink shared config files to current release"
-    task :symlink_shared_config do
-      run "ln -nfs #{shared_path}/config/* #{latest_release}/config"
-    end
 
-  end
-
-  before "deploy:update_code", "hivequeen:start"
-    before 'hivequeen:start', 'hivequeen:check_commit'
+  before "deploy:extract", "hivequeen:start"
+  before 'hivequeen:start', 'hivequeen:check_commit'
   on :start, "hivequeen:require_environment", :except => HiveQueen.environment_names
   namespace :hivequeen do
 
@@ -106,10 +97,6 @@ Capistrano::Configuration.instance.load do
     end
   end
 
-  # Keep all but the 5 most recent releases
-  set :keep_releases, 5
-  after "deploy", "deploy:cleanup"
-
   desc "Deploy without migrations"
   task(:hotfix) { deploy.default }
 
@@ -135,11 +122,4 @@ Capistrano::Configuration.instance.load do
     end
   end
 
-  after "deploy:restart", "deploy:restart_rails_services"
-  namespace :deploy do
-    desc "restarts all rails services concurrently"
-    task :restart_rails_services, :roles => [:app, :search, :bg, :resque] do
-      run "/etc/init.d/rails_services upgrade"
-    end
-  end
 end
