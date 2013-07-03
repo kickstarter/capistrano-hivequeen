@@ -1,6 +1,6 @@
 Capistrano::Configuration.instance.load do
 
-  before "deploy:extract", "hivequeen:start"
+  before "deploy:stage", "hivequeen:start"
   before 'hivequeen:start', 'hivequeen:check_commit'
   on :start, "hivequeen:require_environment", :except => HiveQueen.environment_names
   namespace :hivequeen do
