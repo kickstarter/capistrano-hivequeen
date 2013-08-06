@@ -40,7 +40,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   after "deploy:restart", "deploy:restart_rails_services"
   namespace :deploy do
     desc "restarts all rails services concurrently"
-    task :restart_rails_services, :roles => [:app, :search, :bg, :resque] do
+    task :restart_rails_services, :roles => [:app, :bg, :resque] do
       run "/etc/init.d/rails_services upgrade"
     end
   end
