@@ -1,5 +1,9 @@
 Capistrano::Configuration.instance.load do
 
+  # Redefine real_revision
+  # real_revision is a legacy name from the default capistrano recipes
+  set(:real_revision) { full_sha }
+
   before "deploy:stage", "hivequeen:start"
   before 'hivequeen:start', 'hivequeen:check_commit'
   on :start, "hivequeen:require_environment", :except => HiveQueen.environment_names
@@ -104,6 +108,11 @@ Capistrano::Configuration.instance.load do
     desc "[internal] Original Capistrano task. Don't run this."
     task :cold do
       # Nothing. Use :cold task below
+    end
+
+    desc "restarts all rails services concurrently"
+    task :restart do
+      run "if [ -x /etc/init.d/rails_services ]; then /etc/init.d/rails_services upgrade; fi"
     end
   end
 

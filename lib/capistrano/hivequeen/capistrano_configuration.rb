@@ -106,5 +106,4 @@ Capistrano::Configuration.instance(:must_exist).load do
   require 'capistrano/hivequeen/setup'
   require 'capistrano/hivequeen/deploy'
 
-
 end
