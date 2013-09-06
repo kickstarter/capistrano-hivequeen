@@ -40,6 +40,7 @@ Gem::Specification.new do |s|
   s.add_dependency('capistrano', '>= 2.11.0')
   s.add_dependency('activesupport', '>= 3.0.0')
   s.add_dependency('json')
+  s.add_dependency('egads', '>= 3.0.0')
   s.add_dependency('excon', '>= 0.6.0') # Perhaps we can support older. Haven't checked.
 
   ## List your development dependencies here. Development dependencies are
