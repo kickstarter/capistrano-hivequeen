@@ -44,7 +44,7 @@ Capistrano::Configuration.instance.load do
 
     desc "[internal] Prompt if deploying the currently running commit, or if tests haven't passed"
     task :check_commit do
-      if environment.to_s == 'production'
+      if environment.to_s == 'production' && !override
         if current_commit == real_revision
           banner = %q{
  ______                   _     _                          _    ___
