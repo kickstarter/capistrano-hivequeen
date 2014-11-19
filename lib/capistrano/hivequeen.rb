@@ -66,11 +66,18 @@ class HiveQueen
 
     # Load credentials from ~/.hivequeen
     def get_credentials!
-      @username, @password = File.read(credentials_path).chomp.split(':')
+      creds = ENV['HIVEQUEEN_CREDENTIALS'] || credentials_from_path
+      @username, @password = creds.chomp.split(':')
       raise unless username && password
+    end
+
+    def credentials_from_path
       # Check that credentials are not accessible to world or group
       mode = File.stat(credentials_path).mode
       raise InsecureCredentials unless (mode % 64 == 0)
+
+      File.read(credentials_path)
+
     rescue InsecureCredentials
       puts "#{credentials_path} is insecure. Please change you password and run"
       puts "chmod 600 #{credentials_path}"
