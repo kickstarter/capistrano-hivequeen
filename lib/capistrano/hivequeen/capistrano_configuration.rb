@@ -94,10 +94,25 @@ Capistrano::Configuration.instance(:must_exist).load do
 
   namespace :ssh do
     HiveQueen.default_roles.each do |role_name|
-      task role_name do
-        cmd =  "ssh -t -A -l #{user} #{roles[role_name.to_sym].servers.first}"
-        puts "Executing #{cmd}"
-        exec cmd
+      namespace role_name do
+        task :default do
+          cmd =  "ssh -t -A -l #{user} #{roles[role_name.to_sym].servers.first}"
+          puts "Executing #{cmd}"
+          exec cmd
+        end
+
+        (1..20).each do |i|
+          task i.to_s.to_sym do
+            servers = roles[role_name.to_sym].servers
+            if server = servers[i - 1]
+              cmd =  "ssh -t -A -l #{user} #{servers[i - 1]}"
+              puts "Executing #{cmd}"
+              exec cmd
+            else
+              puts "#{role_name} has only #{servers.count} servers"
+            end
+          end
+        end
       end
     end
 
