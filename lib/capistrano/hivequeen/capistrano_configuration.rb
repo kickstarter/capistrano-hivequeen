@@ -88,7 +88,6 @@ Capistrano::Configuration.instance(:must_exist).load do
         logger.trace "Using #{db_server} as primary db server"
         role :db, db_server.to_s, :primary => true
       end
-
     end
   end
 
@@ -101,6 +100,11 @@ Capistrano::Configuration.instance(:must_exist).load do
       end
     end
 
+    task :default do
+      cmd = "ssh -t -A -l #{user} #{roles.values.sample.servers.sample}"
+      puts "Executing #{cmd}"
+      exec cmd
+    end
   end
 
   require 'capistrano/hivequeen/setup'
