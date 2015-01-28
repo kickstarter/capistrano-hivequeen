@@ -92,25 +92,35 @@ Capistrano::Configuration.instance(:must_exist).load do
   end
 
   namespace :ssh do
+    command_format = "ssh -t -A -l %s %s"
     HiveQueen.default_roles.each do |role_name|
       task role_name do
-        cmd =  "ssh -t -A -l #{user} #{roles[role_name.to_sym].servers.first}"
+        cmd = command_format % [user, roles[role_name.to_sym].servers.first]
         puts "Executing #{cmd}"
         exec cmd
       end
     end
 
     task :default do
-      cmd = "ssh -t -A -l #{user} #{roles.values.sample.servers.sample}"
+      cmd = command_format % [user, roles.values.sample.servers.sample]
       puts "Executing #{cmd}"
       exec cmd
     end
   end
 
-  task :console do
-    cmd = "ssh -t -A -l #{user} #{roles.values.sample.servers.sample} cd /apps/#{HiveQueen.project}/current && bundle exec rails console"
-    puts "Opening console"
-    exec cmd
+  namespace :console do
+    command_format = "ssh -t -A -l %s %s 'source /etc/profile; cd /apps/#{HiveQueen.project}/current && bundle exec rails console'"
+    HiveQueen.default_roles.each do |role_name|
+      task role_name do
+        puts "Opening console"
+        exec command_format % [user, roles[role_name.to_sym].servers.first]
+      end
+    end
+
+    task :default do
+      puts "Opening console"
+      exec command_format % [user, roles.values.sample.servers.sample]
+    end
   end
 
   require 'capistrano/hivequeen/setup'
