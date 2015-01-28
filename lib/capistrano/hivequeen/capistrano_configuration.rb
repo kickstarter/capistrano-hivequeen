@@ -107,6 +107,12 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
   end
 
+  task :console do
+    cmd = "ssh -t -A -l #{user} #{roles.values.sample.servers.sample} cd /apps/#{HiveQueen.project}/current && bundle exec rails console"
+    puts "Opening console"
+    exec cmd
+  end
+
   require 'capistrano/hivequeen/setup'
   require 'capistrano/hivequeen/deploy'
 
