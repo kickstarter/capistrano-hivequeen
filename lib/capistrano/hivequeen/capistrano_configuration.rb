@@ -88,38 +88,38 @@ Capistrano::Configuration.instance(:must_exist).load do
         logger.trace "Using #{db_server} as primary db server"
         role :db, db_server.to_s, :primary => true
       end
-    end
-  end
 
-  namespace :ssh do
-    command_format = "ssh -t -A -l %s %s"
-    HiveQueen.default_roles.each do |role_name|
-      task role_name do
-        cmd = command_format % [user, roles[role_name.to_sym].servers.first]
-        puts "Executing #{cmd}"
-        exec cmd
+      namespace :ssh do
+        command_format = "ssh -t -A -l %s %s"
+        env['roles'].keys.each do |role_name|
+          task role_name do
+            cmd = command_format % [user, roles[role_name.to_sym].servers.first]
+            puts "Executing #{cmd}"
+            exec cmd
+          end
+        end
+
+        task :default do
+          cmd = command_format % [user, roles.values.sample.servers.sample]
+          puts "Executing #{cmd}"
+          exec cmd
+        end
       end
-    end
 
-    task :default do
-      cmd = command_format % [user, roles.values.sample.servers.sample]
-      puts "Executing #{cmd}"
-      exec cmd
-    end
-  end
+      namespace :console do
+        command_format = "ssh -t -A -l %s %s 'source /etc/profile; cd /apps/#{HiveQueen.project}/current && bundle exec rails console'"
+        env['roles'].keys.each do |role_name|
+          task role_name do
+            puts "Opening console"
+            exec command_format % [user, roles[role_name.to_sym].servers.first]
+          end
+        end
 
-  namespace :console do
-    command_format = "ssh -t -A -l %s %s 'source /etc/profile; cd /apps/#{HiveQueen.project}/current && bundle exec rails console'"
-    HiveQueen.default_roles.each do |role_name|
-      task role_name do
-        puts "Opening console"
-        exec command_format % [user, roles[role_name.to_sym].servers.first]
+        task :default do
+          puts "Opening console"
+          exec command_format % [user, roles.values.sample.servers.sample]
+        end
       end
-    end
-
-    task :default do
-      puts "Opening console"
-      exec command_format % [user, roles.values.sample.servers.sample]
     end
   end
 
