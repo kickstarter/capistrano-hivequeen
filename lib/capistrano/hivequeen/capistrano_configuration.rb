@@ -89,18 +89,38 @@ Capistrano::Configuration.instance(:must_exist).load do
         role :db, db_server.to_s, :primary => true
       end
 
-    end
-  end
+      namespace :ssh do
+        command_format = "ssh -t -A -l %s %s"
+        env['roles'].keys.each do |role_name|
+          task role_name do
+            cmd = command_format % [user, roles[role_name.to_sym].servers.first]
+            puts "Executing #{cmd}"
+            exec cmd
+          end
+        end
 
-  namespace :ssh do
-    HiveQueen.default_roles.each do |role_name|
-      task role_name do
-        cmd =  "ssh -t -A -l #{user} #{roles[role_name.to_sym].servers.first}"
-        puts "Executing #{cmd}"
-        exec cmd
+        task :default do
+          cmd = command_format % [user, roles.values.sample.servers.sample]
+          puts "Executing #{cmd}"
+          exec cmd
+        end
+      end
+
+      namespace :console do
+        command_format = "ssh -t -A -l %s %s 'source /etc/profile; cd /apps/#{HiveQueen.project}/current && bundle exec rails console'"
+        env['roles'].keys.each do |role_name|
+          task role_name do
+            puts "Opening console"
+            exec command_format % [user, roles[role_name.to_sym].servers.first]
+          end
+        end
+
+        task :default do
+          puts "Opening console"
+          exec command_format % [user, roles.values.sample.servers.sample]
+        end
       end
     end
-
   end
 
   require 'capistrano/hivequeen/setup'
