@@ -35,12 +35,12 @@ Capistrano::Configuration.instance(:must_exist).load do
       warn "Skipping github, using local git checkout"
       branch
     end
-    end
+  end
 
   # Expand sha into a complete git sha
   set :full_sha do
     full_sha = `git rev-parse --verify #{sha}`.strip
-    raise "#{sha} is not a valid git ref. Run `git fetch` and try again?" if sha.empty?
+    raise "#{sha} is not a valid git ref. Run `git fetch` and try again?" if sha.to_s.empty?
     full_sha
   end
 
