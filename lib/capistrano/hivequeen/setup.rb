@@ -29,7 +29,7 @@ Capistrano::Configuration.instance.load do
   desc "Run chef-client on all servers"
   task :setup do
     as_user do
-      sudo "chef-client"
+      sudo "/etc/init.d/chef-client restart"
     end
   end
 end
