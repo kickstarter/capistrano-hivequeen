@@ -80,8 +80,9 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       # Ensure some server designated as db server
       unless roles.key?(:db)
-        # Prefer the bg server
-        db_server = roles[:bg].servers.first if roles.key?(:bg)
+        # Prefer a background worker role
+        bg = (roles.keys & [:bg, :resque, :sidekiq]).sample
+        db_server = roles[bg].servers.first if roles.key?(bg)
 
         # Otherwise, use any server
         db_server ||= roles.values.map{|x| x.servers}.flatten.compact.first
