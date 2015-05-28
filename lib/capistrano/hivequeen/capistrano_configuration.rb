@@ -82,10 +82,10 @@ Capistrano::Configuration.instance(:must_exist).load do
       unless roles.key?(:db)
         # Prefer a background worker role
         bg = (roles.keys & [:bg, :resque, :sidekiq]).sample
-        db_server = roles[bg].servers.first if roles.key?(bg)
+        db_server = roles[bg].servers.sample if roles.key?(bg)
 
         # Otherwise, use any server
-        db_server ||= roles.values.map{|x| x.servers}.flatten.compact.first
+        db_server ||= roles.values.map{|x| x.servers}.flatten.compact.sample
         logger.trace "Using #{db_server} as primary db server"
         role :db, db_server.to_s, :primary => true
       end
