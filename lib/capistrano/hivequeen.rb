@@ -1,5 +1,6 @@
 # HTTP Client for Hive Queen environment configuration
 require 'json'
+require 'active_support'
 require 'active_support/core_ext'
 require 'fileutils'
 require 'excon'
