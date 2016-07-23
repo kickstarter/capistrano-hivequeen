@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.name              = 'capistrano-hivequeen'
   s.version           = HiveQueen::Version.to_s
   s.date              = Time.now.strftime("%Y-%m-%d")
+  s.license           = 'MIT'
 
   ## Make sure your summary is short. The description may be as long
   ## as you like.

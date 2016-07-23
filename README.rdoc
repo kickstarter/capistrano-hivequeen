@@ -26,3 +26,9 @@ And in your config/deploy.rb:
   Use a specific branch, rather than the default for the Hivequeen environment:
 
     cap staging deploy -s branch=some_feature
+
+== License
+
+@copy; Copyright Kickstarter, PBC.
+
+Released under an MIT License.
