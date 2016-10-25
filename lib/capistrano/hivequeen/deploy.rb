@@ -111,8 +111,12 @@ Capistrano::Configuration.instance.load do
     end
 
     desc "restarts all rails services concurrently"
-    task :restart do
-      run "if [ -x /etc/init.d/rails_services ]; then /etc/init.d/rails_services upgrade; fi"
+    task :restart, max_hosts: 3 do
+      restart_cmd = "if [ -x /etc/init.d/rails_services ]; then /etc/init.d/rails_services upgrade; fi"
+      # Restart non-app servers all-at-once
+      run restart_cmd, roles: (roles.keys - [:app])
+      # Restart app servers in batchs of 3
+      run restart_cmd, max_hosts: 10, roles: :app
     end
   end
 
