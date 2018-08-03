@@ -1,5 +1,39 @@
 Capistrano::Configuration.instance.load do
 
+  BANNERS = {
+    forget_to_push: %q{
+ ______                   _     _                          _    ___
+|  ____|                 | |   | |                        | |  |__ \
+| |__ ___  _ __ __ _  ___| |_  | |_ ___    _ __  _   _ ___| |__   ) |
+|  __/ _ \| '__/ _` |/ _ \ __| | __/ _ \  | '_ \| | | / __| '_ \ / /
+| | | (_) | | | (_| |  __/ |_  | || (_) | | |_) | |_| \__ \ | | |_|
+|_|  \___/|_|  \__, |\___|\__|  \__\___/  | .__/ \__,_|___/_| |_(_)
+                __/ |                     | |
+               |___/                      |_|
+},
+    tests_didnt_pass: %q{
+ _______        _             _ _     _       _ _                         _
+|__   __|      | |           | (_)   | |     ( ) |                       | |
+   | | ___  ___| |_ ___    __| |_  __| |_ __ |/| |_   _ __   __ _ ___ ___| |
+   | |/ _ \/ __| __/ __|  / _` | |/ _` | '_ \  | __| | '_ \ / _` / __/ __| |
+   | |  __/\__ \ |_\__ \ | (_| | | (_| | | | | | |_  | |_) | (_| \__ \__ \_|
+   |_|\___||___/\__|___/  \__,_|_|\__,_|_| |_|  \__| | .__/ \__,_|___/___(_)
+                                                     | |
+                                                     |_|
+},
+    tests_running: %q{
+ _______        _                                _
+|__   __|      | |                              (_)
+   | | ___  ___| |_ ___   _ __ _   _ _ __  _ __  _ _ __   __ _
+   | |/ _ \/ __| __/ __| | '__| | | | '_ \| '_ \| | '_ \ / _` |
+   | |  __/\__ \ |_\__ \ | |  | |_| | | | | | | | | | | | (_| |_ _ _
+   |_|\___||___/\__|___/ |_|   \__,_|_| |_|_| |_|_|_| |_|\__, (_|_|_)
+                                                          __/ |
+                                                         |___/
+
+},
+  }
+
   # Redefine real_revision
   # real_revision is a legacy name from the default capistrano recipes
   set(:real_revision) { full_sha }
@@ -46,48 +80,16 @@ Capistrano::Configuration.instance.load do
     task :check_commit do
       if environment.to_s == 'production' && !override
         if current_commit == real_revision
-          banner = %q{
- ______                   _     _                          _    ___
-|  ____|                 | |   | |                        | |  |__ \
-| |__ ___  _ __ __ _  ___| |_  | |_ ___    _ __  _   _ ___| |__   ) |
-|  __/ _ \| '__/ _` |/ _ \ __| | __/ _ \  | '_ \| | | / __| '_ \ / /
-| | | (_) | | | (_| |  __/ |_  | || (_) | | |_) | |_| \__ \ | | |_|
-|_|  \___/|_|  \__, |\___|\__|  \__\___/  | .__/ \__,_|___/_| |_(_)
-                __/ |                     | |
-               |___/                      |_|
-}
-          puts banner
+          puts BANNER[:forget_to_push]
           puts "\n\nCommit #{current_commit} is currently deployed\n"
           Capistrano::CLI.ui.ask("Did you forget to push a new commit? Press enter to continue deploying, or ctrl+c to abort")
         end
 
-        tests_didnt_pass = %q{
- _______        _             _ _     _       _ _                         _
-|__   __|      | |           | (_)   | |     ( ) |                       | |
-   | | ___  ___| |_ ___    __| |_  __| |_ __ |/| |_   _ __   __ _ ___ ___| |
-   | |/ _ \/ __| __/ __|  / _` | |/ _` | '_ \  | __| | '_ \ / _` / __/ __| |
-   | |  __/\__ \ |_\__ \ | (_| | | (_| | | | | | |_  | |_) | (_| \__ \__ \_|
-   |_|\___||___/\__|___/  \__,_|_|\__,_|_| |_|  \__| | .__/ \__,_|___/___(_)
-                                                     | |
-                                                     |_|
-}
-        tests_running = %q{
 
- _______        _                                _
-|__   __|      | |                              (_)
-   | | ___  ___| |_ ___   _ __ _   _ _ __  _ __  _ _ __   __ _
-   | |/ _ \/ __| __/ __| | '__| | | | '_ \| '_ \| | '_ \ / _` |
-   | |  __/\__ \ |_\__ \ | |  | |_| | | | | | | | | | | | (_| |_ _ _
-   |_|\___||___/\__|___/ |_|   \__,_|_| |_|_| |_|_|_| |_|\__, (_|_|_)
-                                                          __/ |
-                                                         |___/
-
-}
         puts "Checking commit status for #{real_revision}"
         status = HiveQueen.commit_status(real_revision)
         unless status && status['state'] == "success"
-          banner = status['state'] == 'pending' ? tests_running : tests_didnt_pass
-          puts banner
+          puts BANNER[status['state'] == 'pending' ? :tests_running : :tests_didnt_pass]
 
           message = "Commit status is %s." % (status['state'] || 'unknown')
           if status['target_url']
