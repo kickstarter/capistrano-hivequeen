@@ -22,7 +22,8 @@ Capistrano::Configuration.instance.load do
       params = {
         :task => tasks.join(' '),
         :commit => real_revision,
-        :override => override
+        :override => override,
+        :canary => canary,
       }
 
       if current_commit
@@ -44,7 +45,7 @@ Capistrano::Configuration.instance.load do
 
     desc "[internal] Prompt if deploying the currently running commit, or if tests haven't passed"
     task :check_commit do
-      if environment.to_s == 'production' && !override
+      if environment.to_s == 'production' && !override && !canary
         if current_commit == real_revision
           banner = %q{
  ______                   _     _                          _    ___
