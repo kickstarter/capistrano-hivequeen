@@ -7,11 +7,21 @@ Capistrano::Configuration.instance.load do
   before "deploy:stage", "hivequeen:start"
   before 'hivequeen:start', 'hivequeen:check_commit'
   on :start, "hivequeen:require_environment", :except => HiveQueen.environment_names
+  on :start, "hivequeen:ensure_canary_specifies_hosts"
+
   namespace :hivequeen do
 
     desc "[internal] abort if no environment specified"
     task :require_environment do
       abort "No environment specified." if !exists?(:environment)
+    end
+
+    desc "[internal] abort if we're trying to do a canary deploy but HOSTS hasn't been defined"
+    task :ensure_canary_specifies_hosts do
+      # TODO: I suppose we could randomly select instance(s) in this case
+      if canary && !ENV.key?('HOSTS')
+        abort "You asked to do a canary deployment but didn't specify any hosts! \nPlease invoke like `cap HOSTS=foo.com deploy -s canary=true'"
+      end
     end
 
     desc "[internal] Start a deployment in hivequeen"
