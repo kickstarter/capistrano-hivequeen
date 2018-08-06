@@ -27,6 +27,12 @@ And in your config/deploy.rb:
 
     cap staging deploy -s branch=some_feature
 
+=== Releasing a new version
+  First, bump the version in lib/capistrano/hivequeen/version.rb. Then:
+
+    gem build capistrano-hivequeen.gemspec
+    gem push capistrano-hivequeen-$VERSION.gem
+
 == License
 
 @copy; Copyright Kickstarter, PBC.
