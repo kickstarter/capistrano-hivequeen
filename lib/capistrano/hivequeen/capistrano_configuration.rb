@@ -15,6 +15,9 @@ Capistrano::Configuration.instance(:must_exist).load do
   # From the command line, use -s override=true to force a deployment
   set :override, false
 
+  # Don't mark deployments as canary deployments by default
+  set :canary, false
+
   # Command to get the changes being deployed
   set :changelog_command do
     `git log #{current_commit}...#{real_revision} --pretty="%n%h %an: %s (%ar)" --stat --no-color`
