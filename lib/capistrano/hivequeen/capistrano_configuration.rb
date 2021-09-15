@@ -78,7 +78,7 @@ Capistrano::Configuration.instance(:must_exist).load do
         if exists?(:az)
           servers = servers.select {|s| s['availability_zone'] == az}
         end
-        role(role_name.to_sym) { servers.map {|s| s['public_dns']} }
+        role(role_name.to_sym) { servers.map {|s| s['public_dns'] || s['private_dns']} }
       end
 
       # Ensure some server designated as db server
