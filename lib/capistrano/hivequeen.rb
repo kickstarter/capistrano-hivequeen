@@ -1,12 +1,17 @@
 # HTTP Client for Hive Queen environment configuration
+require 'base64'
+require 'fileutils'
 require 'json'
+
 require 'active_support'
 require 'active_support/core_ext'
-require 'fileutils'
+require 'aws-sdk-ec2'
+require 'aws-sdk-ec2instanceconnect'
 require 'excon'
-require 'base64'
+
 require 'capistrano/hivequeen/version'
 require 'capistrano/hivequeen/multiio'
+require 'capistrano/hivequeen/ec2_instance_connect'
 
 # Special cases:
 # - environment not found
@@ -135,4 +140,3 @@ class HiveQueen
 end
 
 require "capistrano/hivequeen/capistrano_configuration"
-

@@ -38,6 +38,8 @@ Gem::Specification.new do |s|
 
   ## List your runtime dependencies here. Runtime dependencies are those
   ## that are needed for an end user to actually USE your code.
+  s.add_dependency('aws-sdk-ec2', '~> 1.0')
+  s.add_dependency('aws-sdk-ec2instanceconnect', '~> 1.0')
   s.add_dependency('capistrano', '>= 2.11.0')
   s.add_dependency('activesupport', '>= 3.0.0')
   s.add_dependency('json')

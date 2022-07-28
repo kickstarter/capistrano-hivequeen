@@ -97,14 +97,18 @@ Capistrano::Configuration.instance(:must_exist).load do
         command_format = "ssh -t -A -l %s %s"
         env['roles'].keys.each do |role_name|
           task role_name do
-            cmd = command_format % [user, roles[role_name.to_sym].servers.first]
+            server = roles[role_name.to_sym].servers.sample
+            HiveQueen.ec2_instance_connect(server.host)
+            cmd = command_format % [user, server]
             puts "Executing #{cmd}"
             exec cmd
           end
         end
 
         task :default do
-          cmd = command_format % [user, roles.values.sample.servers.sample]
+          server = roles.values.sample.servers.sample
+          HiveQueen.ec2_instance_connect(server.host)
+          cmd = command_format % [user, server]
           puts "Executing #{cmd}"
           exec cmd
         end
@@ -114,14 +118,18 @@ Capistrano::Configuration.instance(:must_exist).load do
         command_format = "ssh -t -A -l %s %s 'source /etc/profile; cd /apps/#{HiveQueen.project}/current && bundle exec rails console'"
         env['roles'].keys.each do |role_name|
           task role_name do
+            server = roles[role_name.to_sym].servers.sample
+            HiveQueen.ec2_instance_connect(server.host)
             puts "Opening console"
-            exec command_format % [user, roles[role_name.to_sym].servers.first]
+            exec command_format % [user, server]
           end
         end
 
         task :default do
+          server = roles.values.sample.servers.sample
+          HiveQueen.ec2_instance_connect(server.host)
           puts "Opening console"
-          exec command_format % [user, roles.values.sample.servers.sample]
+          exec command_format % [user, server]
         end
       end
     end
