@@ -8,17 +8,21 @@ class HiveQueen
   end
 
   def self.ec2_instance_connect(*private_dns)
-    # EC2 Instance Connect
+    # Get SSH public key contents
     ssh_public_key = File.read(File.expand_path('~/.ssh/ksr_ed25519.pub'))
-    ec2_params = {
-      filters: [{
-        name:   'network-interface.private-dns-name',
-        values: private_dns
-      }]
-    }
+
+    # Get SSH bastion instance(s) from Name tag
+    ssh_params = { filters: [{ name: 'tag:Name', values: %w[ssh-bastion] }] }
+    logger.trace("ec2:DescribeInstances #{ssh_params.to_json}")
+    bastions = ec2_client.describe_instances(**ssh_params).reservations.map(&:instances).flatten
+
+    # Get EC2 instances from private DNS name
+    ec2_params = { filters: [{ name: 'network-interface.private-dns-name', values: private_dns }] }
     logger.trace("ec2:DescribeInstances #{ec2_params.to_json}")
     instances = ec2_client.describe_instances(**ec2_params).reservations.map(&:instances).flatten
-    threads = instances.map do |instance|
+
+    # Collect EC2 Instance Connect request threads
+    threads = (bastions + instances).map do |instance|
       Thread.new do
         ec2ic_params = {
           availability_zone: instance.placement.availability_zone,
@@ -31,6 +35,7 @@ class HiveQueen
       end
     end
 
+    # Execute EC2 Instance Connect request threads
     threads.each(&:join)
   end
 end
