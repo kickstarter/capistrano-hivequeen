@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
   ## that are needed for an end user to actually USE your code.
   s.add_dependency('aws-sdk-ec2', '~> 1.0')
   s.add_dependency('aws-sdk-ec2instanceconnect', '~> 1.0')
-  s.add_dependency('capistrano', '>= 2.11.0')
+  s.add_dependency('capistrano', '~> 2.11')
   s.add_dependency('activesupport', '>= 3.0.0')
   s.add_dependency('json')
   s.add_dependency('egads', '>= 3.0.0')
