@@ -4,7 +4,10 @@ class HiveQueen
   end
 
   def self.ec2_instance_connect_client
-    @ec2_instance_connect_client ||= Aws::EC2InstanceConnect::Client.new
+    @ec2_instance_connect_client ||= Aws::EC2InstanceConnect::Client.new(
+      retry_limit:   5,
+      retry_backoff: -> (c) { sleep(5) },
+    )
   end
 
   def self.ec2_instance_connect(*private_dns)
