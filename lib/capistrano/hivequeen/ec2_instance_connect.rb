@@ -15,12 +15,12 @@ class HiveQueen
     ssh_public_key = File.read(File.expand_path('~/.ssh/ksr_ed25519.pub'))
 
     # Get SSH bastion instance(s) from Name tag
-    ssh_params = { filters: [{ name: 'tag:Name', values: %w[ssh-bastion] }] }
+    ssh_params = { filters: [{ name: 'tag:Name', values: %w[ssh-bastion] }, {name: 'instance-state-name', values: %w[running]}] }
     logger.trace("ec2:DescribeInstances #{ssh_params.to_json}")
     bastions = ec2_client.describe_instances(**ssh_params).reservations.map(&:instances).flatten
 
     # Get EC2 instances from private DNS name
-    ec2_params = { filters: [{ name: 'network-interface.private-dns-name', values: private_dns }] }
+    ec2_params = { filters: [{ name: 'network-interface.private-dns-name', values: private_dns }, {name: 'instance-state-name', values: %w[running]}] }
     logger.trace("ec2:DescribeInstances #{ec2_params.to_json}")
     instances = ec2_client.describe_instances(**ec2_params).reservations.map(&:instances).flatten
 
