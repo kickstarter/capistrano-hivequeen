@@ -15,7 +15,10 @@ Gem::Specification.new do |s|
   ## Make sure your summary is short. The description may be as long
   ## as you like.
   s.summary     = "Capistrano extensions for interacting with HiveQueen"
-  s.description = "Capistrano extensions for interacting with HiveQueen"
+  s.description = <<~DESC
+    Capistrano extensions for interacting with HiveQueen
+    Includes logic to connect with AWS EC2 Instance Connect
+  DESC
 
   ## List the primary authors. If there are a bunch of authors, it's probably
   ## better to set the email to an email list or something. If you don't have
@@ -38,13 +41,13 @@ Gem::Specification.new do |s|
 
   ## List your runtime dependencies here. Runtime dependencies are those
   ## that are needed for an end user to actually USE your code.
-  s.add_dependency('aws-sdk-ec2', '~> 1.0')
+  s.add_dependency('aws-sdk-ec2',                '~> 1.0')
   s.add_dependency('aws-sdk-ec2instanceconnect', '~> 1.0')
-  s.add_dependency('capistrano', '~> 2.11')
-  s.add_dependency('activesupport', '>= 3.0.0')
-  s.add_dependency('json')
-  s.add_dependency('egads', '>= 3.0.0')
-  s.add_dependency('excon', '>= 0.6.0') # Perhaps we can support older. Haven't checked.
+  s.add_dependency('capistrano',                 '~> 2.11')
+  s.add_dependency('activesupport',              '~> 6.0')
+  s.add_dependency('json',                       '~> 2.3')
+  s.add_dependency('egads',                      '~> 5.1')
+  s.add_dependency('excon',                      '~> 0.6')
 
   ## List your development dependencies here. Development dependencies are
   ## those that are only needed during development
